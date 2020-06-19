@@ -311,24 +311,33 @@ def check_header(url, from_google=False):
     """
     Performs a HEAD request to check if the URL / Google Drive ID is live.
     """
-    session = requests.Session()
-    if from_google:
-        URL = "https://docs.google.com/uc?export=download"
-        response = session.head(URL, params={"id": url}, stream=True)
-    else:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) "
-            + "AppleWebKit/537.36 (KHTML, like Gecko) "
-            + "Chrome/77.0.3865.90 Safari/537.36"
-        }
-        response = session.head(url, allow_redirects=True, headers=headers)
-    status = response.status_code
-    session.close()
-
-    assert status == 200, (
-        "The url {} is broken. If this is not your own url,"
-        + " please open up an issue on GitHub"
-    ).format(url)
+    for i in range(3):
+        try:
+            session = requests.Session()
+            print("bleh")
+            if from_google:
+                URL = "https://docs.google.com/uc?export=download"
+                response = session.head(URL, params={"id": url}, stream=True)
+            else:
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) "
+                    + "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    + "Chrome/77.0.3865.90 Safari/537.36"
+                }
+                response = session.head(url, allow_redirects=True, headers=headers)
+            status = response.status_code
+            session.close()
+            assert status == 200, (
+                "The url {} is broken. If this is not your own url,"
+                + " please open up an issue on GitHub"
+            ).format(url)
+            break
+        except AssertionError:
+            if i == 2:
+                raise
+            else:
+                # If failed, add a sleep of 5 seconds before retrying
+                time.sleep(2)
 
 
 def download_pretrained_model(model_name, *args, **kwargs):
