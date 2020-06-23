@@ -8,6 +8,7 @@ import torch
 from mmf.common.registry import registry
 from mmf.common.sample import Sample, SampleList
 from mmf.models.cnn_lstm import CNNLSTM
+from mmf.modules.losses import LogitBinaryCrossEntropy
 from mmf.utils.configuration import Configuration
 from mmf.utils.general import get_mmf_root
 from tests.test_utils import dummy_args
@@ -35,6 +36,7 @@ class TestModelCNNLSTM(unittest.TestCase):
         configuration.freeze()
         self.config = configuration.config
         registry.register("config", self.config)
+        registry.register("logit_bce", LogitBinaryCrossEntropy)
 
     def test_forward(self):
         model_config = self.config.model_config.cnn_lstm

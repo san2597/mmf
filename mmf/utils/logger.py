@@ -70,17 +70,17 @@ class Logger:
         )
 
         # Add handler to file
-        channel = logging.FileHandler(filename=self.log_filename, mode="a")
-        channel.setFormatter(formatter)
-        self.add_handlers(channel)
+        self.file_channel = logging.FileHandler(filename=self.log_filename, mode="a")
+        self.file_channel.setFormatter(formatter)
+        self.add_handlers(self.file_channel)
 
         # Add handler to train.log. train.log is full log that is also used
         # by slurm/fbl output
-        channel = logging.FileHandler(
+        self.train_channel = logging.FileHandler(
             filename=os.path.join(self.save_dir, "train.log"), mode="a"
         )
-        channel.setFormatter(formatter)
-        self.add_handlers(channel)
+        self.train_channel.setFormatter(formatter)
+        self.add_handlers(self.train_channel)
 
         # Add handler to stdout. Only when we are not capturing stdout in
         # the logger

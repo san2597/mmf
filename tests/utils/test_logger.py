@@ -33,6 +33,8 @@ class TestLogger(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         # Cleanup temp working dir.
+        cls.writer.file_channel.close()
+        cls.writer.train_channel.close()
         if cls._tmpdir is not None:
             shutil.rmtree(cls._tmpdir)
 
